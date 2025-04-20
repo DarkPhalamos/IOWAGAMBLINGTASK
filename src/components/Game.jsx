@@ -1,46 +1,48 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react"; // Añade useRef
 import Deck from "./Deck";
 import ScoreBoard from "./ScoreBoard";
 import History from "./History";
 import { decks } from "../data/deck";
-import "../styles/main.css";
-import * as XLSX from "xlsx";
+import "../styles/Game.css";
+import { collection, addDoc } from "firebase/firestore";
+import { db } from "../firebaseConfig";
 
-function Game() {
+function Game({ formData }) {
   const [score, setScore] = useState(0);
   const [history, setHistory] = useState([]);
   const [lastResult, setLastResult] = useState(null);
+  const [hasSaved, setHasSaved] = useState(false);
+  const timeoutRef = useRef(null); // ✅ Aquí va el useRef
 
   const handleDeckClick = (deckId) => {
     const { reward, penalty } = decks[deckId];
     const penaltyValue = penalty();
     const total = reward + penaltyValue;
 
-    setScore((prev) => prev + total);
-    setHistory((prev) => [
-      ...prev,
-      {
-        id: prev.length + 1,
-        deck: deckId,
-        reward,
-        penalty: penaltyValue,
-        total,
-      },
-    ]);
-
-    setLastResult({
+    const newEntry = {
+      id: history.length + 1,
       deck: deckId,
       reward,
       penalty: penaltyValue,
       total,
-    });
+    };
 
-    setTimeout(() => {
+    setScore((prev) => prev + total);
+    setHistory((prev) => [...prev, newEntry]);
+    setLastResult(newEntry);
+
+    // ✅ Limpiamos timeout anterior si existe
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    timeoutRef.current = setTimeout(() => {
       setLastResult(null);
+      timeoutRef.current = null;
     }, 2000);
   };
 
-  const exportToExcel = () => {
+  const saveGameToFirebase = async () => {
     const count = { A: 0, B: 0, C: 0, D: 0 };
     history.forEach((entry) => {
       count[entry.deck]++;
@@ -50,40 +52,43 @@ function Game() {
     const desventajosos = count.A + count.B;
     const indice = ventajosos - desventajosos;
 
-    const data = [
-      [
-        "ID",
-        "Grupo",
-        "Edad",
-        "A",
-        "B",
-        "C",
-        "D",
-        "Ventajosos",
-        "Desventajosos",
-        "Índice",
-        "Comentarios",
-      ],
-      [
-        "01",
-        "Control",
-        "25",
-        count.A,
-        count.B,
-        count.C,
-        count.D,
+    const partida = {
+      ...formData,
+      elecciones: history,
+      resumen: {
+        A: count.A,
+        B: count.B,
+        C: count.C,
+        D: count.D,
         ventajosos,
         desventajosos,
-        indice > 0 ? `+${indice}` : indice,
-        "Comentario ejemplo",
-      ],
-    ];
+        indice,
+      },
+      puntuacionFinal: score,
+      timestamp: new Date().toISOString(),
+    };
 
-    const worksheet = XLSX.utils.aoa_to_sheet(data);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Resultados");
-    XLSX.writeFile(workbook, "iowa-gambling-result.xlsx");
+    try {
+      await addDoc(collection(db, "resultados"), partida);
+      setHasSaved(true);
+      console.log("✅ Partida guardada en Firebase.");
+    } catch (error) {
+      console.error("❌ Error al guardar en Firebase:", error);
+    }
   };
+
+  useEffect(() => {
+    if (history.length === 100 && !hasSaved) {
+      saveGameToFirebase();
+    }
+  }, [history, hasSaved]);
+
+  // 🔁 Limpieza del timeout al desmontar el componente
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, []);
 
   return (
     <div className="game-container">
@@ -92,7 +97,7 @@ function Game() {
 
       {lastResult && (
         <div
-          className={`result-card ${lastResult.penalty < 0 ? "loss" : "gain"}`}
+          className={`result-card ${lastResult.total >= 0 ? "gain" : "loss"}`}
         >
           <p>
             <strong>Mazo {lastResult.deck}</strong>
@@ -113,9 +118,13 @@ function Game() {
         ))}
       </div>
 
-      <button onClick={exportToExcel} style={{ marginTop: "2rem" }}>
-        Exportar a Excel
-      </button>
+      {!hasSaved && history.length >= 20 && (
+        <button onClick={saveGameToFirebase} style={{ marginTop: "2rem" }}>
+          Finalizar y guardar partida
+        </button>
+      )}
+
+      {hasSaved && <p style={{ marginTop: "2rem" }}>✅ Datos guardados.</p>}
 
       <h2>Historial</h2>
       <History entries={history} />

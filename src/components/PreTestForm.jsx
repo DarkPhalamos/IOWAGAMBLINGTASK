@@ -75,7 +75,7 @@ function PreTestForm() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="formulario">
+      <form onSubmit={handleSubmit} className="formulario" noValidate>
         {/* Sección 1: Sociodemográficos */}
         <div className="form-group">
           <label htmlFor="edad">Edad:</label>
