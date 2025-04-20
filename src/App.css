@@ -40,23 +40,3 @@
 .read-the-docs {
   color: #888;
 }
-
-.result-card {
-  margin-top: 1.5rem;
-  padding: 1rem 2rem;
-  border-radius: 10px;
-  font-size: 1.1rem;
-  font-weight: bold;
-  display: inline-block;
-  transition: opacity 0.3s;
-}
-
-.result-card.gain {
-  background-color: #2e7d32;
-  color: #c8facc;
-}
-
-.result-card.loss {
-  background-color: #c62828;
-  color: #ffdada;
-}

@@ -1,18 +1,35 @@
+/* === BASE === */
 body {
   margin: 0;
   background-color: #121212;
   color: #fff;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
+#root {
+  width: 100%;
+}
+
+/* === CONTENEDORES GENERALES === */
+.centered-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  max-width: 800px;
+  width: 100%;
+  margin: auto;
+}
+
+/* === JUEGO === */
 .game-container {
   text-align: center;
   padding: 2rem;
-  max-width: 600px;
   width: 100%;
 }
 
@@ -69,4 +86,100 @@ button:hover {
 .result-card.loss {
   background-color: #c62828;
   color: #ffdada;
+}
+
+/* === FORMULARIO === */
+.form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  width: 100%;
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+.form-title {
+  font-size: 2rem;
+  text-align: center;
+}
+
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  width: 100%;
+  max-width: 500px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.form-group label {
+  font-weight: bold;
+  margin-bottom: 0.4rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 0.6rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: none;
+  background-color: #222;
+  color: #fff;
+}
+
+/* Botones */
+button[type="submit"],
+.rules-button {
+  background-color: #444;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  margin-top: 1rem;
+  align-self: center;
+  cursor: pointer;
+}
+
+.rules-button {
+  background-color: #1976d2;
+}
+
+button:hover {
+  background-color: #666;
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 600px) {
+  .centered-container {
+    padding: 1rem;
+  }
+
+  .form-title {
+    font-size: 1.6rem;
+  }
+
+  .form-group label {
+    font-size: 0.95rem;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    font-size: 1rem;
+  }
+
+  button {
+    font-size: 0.95rem;
+  }
 }

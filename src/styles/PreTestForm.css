@@ -1,0 +1,144 @@
+/* === FORMULARIO: PreTestForm === */
+.form-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* cambia de center a flex-start */
+  align-items: center;
+  min-height: 100vh;
+  padding: 1.5rem;
+  text-align: center;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-y: auto; /* activa el scroll */
+}
+
+body {
+  margin: 0;
+  background-color: #121212;
+  color: #fff;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  height: 100%;
+}
+.form-title {
+  font-size: 2rem;
+  text-align: center;
+}
+
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  width: 100%;
+  max-width: 500px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.form-group label {
+  font-weight: bold;
+  margin-bottom: 0.4rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 0.6rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: none;
+  background-color: #222;
+  color: #fff;
+}
+
+/* Botones */
+.btn-rules,
+.btn-submit {
+  background-color: #444;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  margin-top: 1rem;
+  align-self: center;
+  cursor: pointer;
+}
+
+.btn-rules {
+  background-color: #1976d2;
+}
+
+button:hover {
+  background-color: #666;
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal-content {
+  background-color: #1e1e1e;
+  padding: 2rem;
+  border-radius: 12px;
+  max-width: 500px;
+  color: white;
+  text-align: center;
+}
+
+.modal-content h2 {
+  margin-bottom: 1rem;
+}
+
+.modal-content button {
+  margin-top: 1.5rem;
+  padding: 0.5rem 1.2rem;
+  font-size: 1rem;
+  background-color: #444;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .form-wrapper {
+    padding: 1rem;
+  }
+
+  .form-title {
+    font-size: 1.6rem;
+  }
+
+  .form-group label {
+    font-size: 0.95rem;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    font-size: 1rem;
+  }
+
+  button {
+    font-size: 0.95rem;
+  }
+}
