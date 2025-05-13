@@ -239,7 +239,13 @@ function PreTestForm() {
         {["cafeina", "tabaco", "alcohol", "drogas"].map((sustancia) => (
           <div key={sustancia} className="form-group">
             <label htmlFor={sustancia}>
-              ¿Has consumido {sustancia} en las últimas 12h?
+              {sustancia === "cafeina"
+                ? "¿Has consumido en las últimas 4 horas más de 6 mg de cafeína por cada kilo de tu peso? (Por ejemplo, si pesas 60 kg, serían más de 360 mg de cafeína, lo que equivale a unos 3 cafés fuertes o más)."
+                : sustancia === "alcohol"
+                ? "¿Has consumido alcohol en las últimas 48h?"
+                : sustancia === "drogas"
+                ? "¿Has consumido drogas en las últimas 72h?"
+                : `¿Has consumido ${sustancia} en las últimas 12h?`}
             </label>
             <select
               id={sustancia}

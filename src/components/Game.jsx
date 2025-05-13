@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react"; // Añade useRef
+import React, { useState, useEffect, useRef } from "react";
 import Deck from "./Deck";
 import ScoreBoard from "./ScoreBoard";
 import History from "./History";
@@ -12,9 +12,12 @@ function Game({ formData }) {
   const [history, setHistory] = useState([]);
   const [lastResult, setLastResult] = useState(null);
   const [hasSaved, setHasSaved] = useState(false);
-  const timeoutRef = useRef(null); // ✅ Aquí va el useRef
+  const [gameEnded, setGameEnded] = useState(false);
+  const timeoutRef = useRef(null);
 
   const handleDeckClick = (deckId) => {
+    if (gameEnded) return;
+
     const { reward, penalty } = decks[deckId];
     const penaltyValue = penalty();
     const total = reward + penaltyValue;
@@ -31,11 +34,7 @@ function Game({ formData }) {
     setHistory((prev) => [...prev, newEntry]);
     setLastResult(newEntry);
 
-    // ✅ Limpiamos timeout anterior si existe
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
     timeoutRef.current = setTimeout(() => {
       setLastResult(null);
       timeoutRef.current = null;
@@ -71,6 +70,7 @@ function Game({ formData }) {
     try {
       await addDoc(collection(db, "resultados"), partida);
       setHasSaved(true);
+      setGameEnded(true);
       console.log("✅ Partida guardada en Firebase.");
     } catch (error) {
       console.error("❌ Error al guardar en Firebase:", error);
@@ -83,7 +83,6 @@ function Game({ formData }) {
     }
   }, [history, hasSaved]);
 
-  // 🔁 Limpieza del timeout al desmontar el componente
   useEffect(() => {
     return () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
@@ -114,7 +113,12 @@ function Game({ formData }) {
 
       <div className="deck-buttons">
         {Object.keys(decks).map((deckId) => (
-          <Deck key={deckId} id={deckId} onClick={handleDeckClick} />
+          <Deck
+            key={deckId}
+            id={deckId}
+            onClick={handleDeckClick}
+            disabled={gameEnded}
+          />
         ))}
       </div>
 
@@ -124,7 +128,11 @@ function Game({ formData }) {
         </button>
       )}
 
-      {hasSaved && <p style={{ marginTop: "2rem" }}>✅ Datos guardados.</p>}
+      {hasSaved && (
+        <p style={{ marginTop: "2rem", color: "green" }}>
+          ✅ Partida guardada correctamente. ¡Has completado los 100 turnos!
+        </p>
+      )}
 
       <h2>Historial</h2>
       <History entries={history} />

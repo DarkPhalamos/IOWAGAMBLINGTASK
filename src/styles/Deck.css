@@ -1,0 +1,21 @@
+.deck-button {
+  padding: 1rem 2rem;
+  margin: 1rem;
+  font-size: 1.2rem;
+  border: none;
+  border-radius: 8px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.deck-button:hover {
+  background-color: #0056b3;
+}
+
+.deck-disabled {
+  background-color: #cccccc;
+  color: #666666;
+  cursor: not-allowed;
+}

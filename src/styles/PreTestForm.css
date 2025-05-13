@@ -2,14 +2,14 @@
 .form-wrapper {
   display: flex;
   flex-direction: column;
-  justify-content: flex-start; /* cambia de center a flex-start */
+  justify-content: flex-start;
   align-items: center;
   min-height: 100vh;
   padding: 1.5rem;
   text-align: center;
   width: 100%;
   box-sizing: border-box;
-  overflow-y: auto; /* activa el scroll */
+  overflow-y: auto;
 }
 
 body {
